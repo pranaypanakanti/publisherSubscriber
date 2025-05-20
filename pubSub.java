@@ -1,3 +1,4 @@
+//copy of main 
 package publisherSubscriber;
 
 import java.util.*;
@@ -48,7 +49,7 @@ class publisher extends Thread {
                 QueueClass.queue.notify();
             }
             try {
-                Thread.sleep(100); // sleep 100ms
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -73,7 +74,7 @@ class subscriber extends Thread {
                 QueueClass.queue.notify();
             }
             try {
-                Thread.sleep(100); // sleep 100ms
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
