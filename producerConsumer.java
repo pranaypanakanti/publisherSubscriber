@@ -1,17 +1,18 @@
 package publisherSubscriber;
 
 import java.util.*;
+import java.util.concurrent.*;
 
-class sharedResource {
+class SharedResource {
 
     int size = 5;
     Queue<Integer> queue = new ArrayDeque<>(size);
 
-    public boolean isFull() {
-        return queue.size() >= 5;
+    private boolean isFull() {
+        return queue.size() >= size;
     }
 
-    public boolean isEmpty() {
+    private boolean isEmpty() {
         return queue.isEmpty();
     }
 
@@ -52,11 +53,11 @@ class sharedResource {
 
 }
 
-class producer implements Runnable {
+class Producer implements Runnable {
 
-    sharedResource resource;
+    SharedResource resource;
 
-    public producer(sharedResource resource) {
+    public Producer(SharedResource resource) {
         this.resource = resource;
     }
 
@@ -67,11 +68,11 @@ class producer implements Runnable {
     }
 }
 
-class consumer implements Runnable {
+class Consumer implements Runnable {
 
-    sharedResource resource;
+    SharedResource resource;
 
-    public consumer(sharedResource resource) {
+    public Consumer(SharedResource resource) {
         this.resource = resource;
     }
 
@@ -82,24 +83,25 @@ class consumer implements Runnable {
     }
 }
 
-public class producerConsumer {
+public class ProducerConsumer {
 
     public static void main(String[] args) throws InterruptedException {
 
-        sharedResource resource = new sharedResource();
-        producer obj1 = new producer(resource);
-        consumer obj2 = new consumer(resource);
+        SharedResource resource = new SharedResource();
 
-        Thread t1 = new Thread(obj1);
-        Thread t2 = new Thread(obj1);
-        Thread t3 = new Thread(obj2);
-        Thread t4 = new Thread(obj2);
-        Thread t5 = new Thread(obj2);
+        int numberOfProducers = 2;
+        int numberOfConsumers = 3;
 
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-        t5.start();
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfProducers + numberOfConsumers);
+
+        for(int i=0; i<numberOfProducers; i++){
+            executor.submit(new Producer(resource));
+        }
+
+        for(int i=0; i<numberOfConsumers; i++){
+            executor.submit(new Consumer(resource));
+        }
+
+        executor.shutdown();
     }
 }
